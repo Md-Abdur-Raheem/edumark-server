@@ -44,6 +44,16 @@ async function run() {
             res.json(result);
         })
 
+          //use post to get data by keys
+          app.post('/all-courses/byCourseId', async (req, res) => {
+              const id = req.body;
+              console.log(id);
+            const query = { courseId: { $in: id } }
+              const courses = await courseCollection.find(query).toArray();
+              console.log(courses);
+            res.json(courses);
+        })
+
 
     }
     finally {
