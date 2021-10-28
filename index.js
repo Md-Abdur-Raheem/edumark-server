@@ -52,6 +52,14 @@ async function run() {
               const courses = await courseCollection.find(query).toArray();
               console.log(courses);
             res.json(courses);
+          })
+        
+        //delete a course
+        app.delete('/all-courses/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await courseCollection.deleteOne(query);
+            res.json(result);
         })
 
 
