@@ -20,25 +20,23 @@ async function run() {
         await client.connect();
         const database = client.db("Edumark");
         const courseCollection = database.collection("courses");
+        const addedCourseCollection = database.collection("addedCourses")
 
         //get api to read all courses
         app.get('/all-courses', async (req, res) => {
             const cursor = courseCollection.find({})
             const result = await cursor.toArray();
-            console.log(result)
             res.send(result);
         })
 
         app.get('/courses', async (req, res) => {
             const cursor = courseCollection.find({}).limit(6);
             const result = await cursor.toArray();
-            console.log(result)
             res.send(result);
         })
 
         //post api to add new courses
         app.post('/add-new-course', async (req, res) => {
-            console.log('req hitted');
             const newUser = req.body;
             const result = await courseCollection.insertOne(newUser);
             res.json(result);
@@ -46,11 +44,9 @@ async function run() {
 
           //use post to get data by keys
           app.post('/all-courses/byCourseId', async (req, res) => {
-              const id = req.body;
-              console.log(id);
+            const id = req.body;
             const query = { courseId: { $in: id } }
-              const courses = await courseCollection.find(query).toArray();
-              console.log(courses);
+            const courses = await courseCollection.find(query).toArray();
             res.json(courses);
           })
         
@@ -60,6 +56,21 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const result = await courseCollection.deleteOne(query);
             res.json(result);
+        })
+
+        //post api to add users added course in addedCourseCollection
+        app.post('/addedCourse', async (req, res) => {
+            const newAddedCourse = req.body;
+            const result = await addedCourseCollection.insertOne(newAddedCourse);
+            res.json(result);
+        })
+
+        //get api to get specific users added course
+        app.get('/addedCourse', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const result = await addedCourseCollection.find(query).toArray();
+            res.send(result);
         })
 
 
