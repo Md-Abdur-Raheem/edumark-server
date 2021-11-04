@@ -87,6 +87,12 @@ async function run() {
             res.json(result);
         })
 
+        //get api to get all users added course
+        app.get('/allAddedCourse', async (req, res) => {
+            const result = await addedCourseCollection.find({}).toArray();
+            res.json(result);
+        })
+
 
     }
     finally {
