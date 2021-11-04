@@ -37,8 +37,15 @@ async function run() {
 
         //post api to add new courses
         app.post('/add-new-course', async (req, res) => {
-            const newUser = req.body;
-            const result = await courseCollection.insertOne(newUser);
+            const newCourse = req.body;
+            const result = await courseCollection.insertOne(newCourse);
+            res.json(result);
+        })
+
+        //get api to show course details by _id
+        app.get('/all-course/:id', async (req, res) => {
+            const id = req.params.id;
+            const result = await courseCollection.findOne({ _id: ObjectId(id) });
             res.json(result);
         })
 
@@ -71,6 +78,13 @@ async function run() {
             const query = { email: email };
             const result = await addedCourseCollection.find(query).toArray();
             res.send(result);
+        })
+
+        //delete api to delete users added course
+        app.delete('/addedCourse/:id', async (req, res) => {
+            const id = req.params.id;
+            const result = await addedCourseCollection.deleteOne({ _id: ObjectId(id) })
+            res.json(result);
         })
 
 
