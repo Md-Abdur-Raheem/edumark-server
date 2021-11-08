@@ -20,7 +20,10 @@ async function run() {
         await client.connect();
         const database = client.db("Edumark");
         const courseCollection = database.collection("courses");
-        const addedCourseCollection = database.collection("addedCourses")
+        const addedCourseCollection = database.collection("addedCourses");
+        const usersCollection = database.collection("users");
+
+
 
         //get api to read all courses
         app.get('/all-courses', async (req, res) => {
@@ -93,12 +96,31 @@ async function run() {
             res.json(result);
         })
 
+        //add new registered user in users collection
+        app.post('/users', async (req, res) => {
+            const newUser = req.body;
+            const result = await usersCollection.insertOne(newUser);
+            res.json(result);
+        })
+
+        // add new registered user from google
+        app.put('/users', async (req, res) => {
+            const newUser = req.body;
+            const email = req.body.email;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = { $set: newUser };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+        })
+
 
     }
     finally {
         //await client.close()
     }
 }
+
 run().catch(console.dir);
 
 app.get('/', (req, res) => res.send('Hello world'));
