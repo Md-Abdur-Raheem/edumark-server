@@ -12,7 +12,6 @@ app.use(cors());
 app.use(express.json());
 
 const admin = require("firebase-admin");
-// const serviceAccount = require("./edumark-1f8c9-firebase-adminsdk-3ru7m-148e0e617d.json");
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
