@@ -114,6 +114,43 @@ async function run() {
             res.json(result);
         })
 
+        //api to make admin
+        app.put('/users/admin', async (req, res) => {
+            const email = req.body.email;
+            const user = { email: email };
+            const updateDoc = { $set: { role : "Admin"} };
+            const result = await usersCollection.updateOne(user, updateDoc);
+            res.json(result);
+        })
+
+        // api to get all admins
+        app.get('/users/admin', async (req, res) => {
+            const query = req.query.query;
+            const filter = { role: query };
+            const result = await usersCollection.find(filter).toArray();
+            res.json(result);
+        })
+
+        //api to remove admin
+        app.put('/users/admin/:email', async(req,res)=> {
+            const email = req.params.email;
+            const admin = { email: email };
+            const updataDoc = { $unset: { role: 'Admin' } };
+            const result = await usersCollection.updateOne(admin, updataDoc);
+            res.json(result);
+        })
+
+        //api to check an admin
+        app.get('/users/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await usersCollection.findOne({ email: email }) ;
+            let isAdmin = false;
+            if (user.role === 'Admin') {
+                isAdmin = true;
+            }
+            res.json({ isAdmin });
+        })
+
 
     }
     finally {
@@ -123,5 +160,5 @@ async function run() {
 
 run().catch(console.dir);
 
-app.get('/', (req, res) => res.send('Hello world'));
+app.get('/', (req, res) => res.send('Edumark speaking: Hello world'));
 app.listen(port, () => console.log("Running server on port", port))
